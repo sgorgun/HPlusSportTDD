@@ -11,7 +11,15 @@ namespace HPlusSportTDD.Core
 
         internal AddToCartResponse AddToCart(AddToCartRequest request)
         {
-            _shoppingCart.Add(request.Item);
+            var item = _shoppingCart.Find(i => i.Id == request.Item.Id);
+            if (item != null)
+            {
+                item.Quantity += request.Item.Quantity;
+            }
+            else
+            {
+                _shoppingCart.Add(request.Item);
+            }
 
             return new AddToCartResponse()
             {
