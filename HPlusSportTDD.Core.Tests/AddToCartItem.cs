@@ -1,9 +1,12 @@
-﻿
-namespace HPlusSportTDD.Core
+﻿namespace HPlusSportTDD.Core
 {
-    internal class AddToCartItem : ValuesAttribute
+    public class AddToCartItem
     {
-        public int Id { get; set; }
+        public AddToCartItem()
+        {
+        }
+
+        public int ArticleId { get; set; }
         public int Quantity { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Moq;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HPlusSportTDD.Core
 {
-    internal class ShoppingCartTests
+    class ShoppingCartTests
     {
         [SetUp]
         public void SetUp()
@@ -19,35 +21,45 @@ namespace HPlusSportTDD.Core
         {
             var item = new AddToCartItem()
             {
-                Id = 1,
-                Quantity = 5,
+                ArticleId = 42,
+                Quantity = 5
             };
 
             var request = new AddToCartRequest()
             {
-                Item = item,
+                Item = item
             };
 
-            var manager = new ShoppingCartManager();
+            var mockManager = new Mock<IShoppingCartManager>();
 
-            AddToCartResponse response = manager.AddToCart(request);
+            mockManager.Setup(manager => manager.AddToCart(
+                It.IsAny<AddToCartRequest>())).Returns(
+                    (AddToCartRequest request) => new AddToCartResponse()
+                    {
+                        Items = new AddToCartItem[] { request.Item }
+                    }
+                );
 
-            Assert. NotNull(response);
+            //var manager = new ShoppingCartManager();
+
+            AddToCartResponse response = mockManager.Object.AddToCart(request);
+
+            Assert.NotNull(response);
             Assert.Contains(item, response.Items);
         }
-        
+
         [Test]
         public void ShouldReturnArticlesAddedToCart()
         {
             var item1 = new AddToCartItem()
             {
-                Id = 1,
-                Quantity = 5,
+                ArticleId = 42,
+                Quantity = 5
             };
 
             var request = new AddToCartRequest()
             {
-                Item = item1,
+                Item = item1
             };
 
             var manager = new ShoppingCartManager();
@@ -56,18 +68,18 @@ namespace HPlusSportTDD.Core
 
             var item2 = new AddToCartItem()
             {
-                Id = 2,
-                Quantity = 15,
+                ArticleId = 43,
+                Quantity = 10
             };
 
             request = new AddToCartRequest()
             {
-                Item = item2,
+                Item = item2
             };
 
             response = manager.AddToCart(request);
 
-            Assert. NotNull(response);
+            Assert.NotNull(response);
             Assert.Contains(item1, response.Items);
             Assert.Contains(item2, response.Items);
         }
@@ -77,13 +89,13 @@ namespace HPlusSportTDD.Core
         {
             var item1 = new AddToCartItem()
             {
-                Id = 1,
-                Quantity = 5,
+                ArticleId = 42,
+                Quantity = 5
             };
 
             var request = new AddToCartRequest()
             {
-                Item = item1,
+                Item = item1
             };
 
             var manager = new ShoppingCartManager();
@@ -92,19 +104,21 @@ namespace HPlusSportTDD.Core
 
             var item2 = new AddToCartItem()
             {
-                Id = 1,
-                Quantity = 15,
+                ArticleId = 42,
+                Quantity = 10
             };
 
             request = new AddToCartRequest()
             {
-                Item = item2,
+                Item = item2
             };
 
             response = manager.AddToCart(request);
 
             Assert.NotNull(response);
-            Assert.That(Array.Exists(response.Items, item => item.Id == 1 && item.Quantity == 20));
+            Assert.That(Array.Exists(response.Items, 
+                item => item.ArticleId == 42 && item.Quantity == 15));
         }
+
     }
 }

@@ -1,7 +1,6 @@
-﻿
-namespace HPlusSportTDD.Core
+﻿namespace HPlusSportTDD.Core
 {
-    internal class AddToCartRequest
+    public class AddToCartRequest
     {
         public AddToCartRequest()
         {
